@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      .bg {
+        background-image: url(/Images/valorant.jpeg); 
+        background-position: center;
+        background-attachment: fixed;
+      }
+      .head {
+        text-align: center;
+        color: #33ffa5;
+      }
+      .card {
+        padding: 8px;
+        width: 23.3%;
+        height: 400px;
+        border: 1px solid #000;
+        display: inline-block;
+      }
+      .image {
+        width: 50%;
+        border-radius: 5px;
+      }
+      .abimage {
+        width: 15%;
+        border-radius: 5px;
+        margin:7px;
+      }
+      .voice {
+        padding: 3px;
+        /* width: 5%; */
+        /* height: 25px; */
+        border: 1px solid #000;
+        border-radius: 5px;
+      }
+      .audio {
+        width: 100%;
+      }      
+    </style>
+  </head>
+  <body class="bg">
+    <div class="head">
+      <h1>VALORANT!! As we know it</h1>
+    </div>
+    <div id="container">
+      
+    </div>
+    <script>
+      function playVoice(id) {
+        var media = document.getElementById(id);
+        media.play();
+      }
+
+      fetch("https://valorant-api.com/v1/agents", {
+        method: "GET",
+      })
+        .then(function (response) {
+          return response.json();
+        })
+        .then(function (data) {
+          //   console.log(data);
+          let container = document.getElementById("container");
+          console.log(data);
+          data.data.forEach((agent, index) => {
+            var abtemplate = '';
+            // console.log(index);
+            // console.log(agent);
+            // console.log(agent.description);
+            console.log(agent.abilities);
+            agent.abilities.forEach((ability,index) => {
+              // style= "display: inline-block;"
+              abtemplate = abtemplate + `<a title = "${ability.description}" ><img src="${ability.displayIcon}" class="abimage"></a>`;
+            });
+            let template = `<div class="card">                
+                <img src="${agent.displayIcon}" class="image">
+                <div><button class="voice" onclick="playVoice('audio-${index}')">Voice</button></div>
+                <audio class = "audio" id="audio-${index}" controls hidden > 
+                  <source src="${agent.voiceLine.mediaList[0].wave}" type="audio/wav">
+                  <source src="${agent.voiceLine.mediaList[0].wwise}" type="audio/wem">
+                </audio>
+                <div style ="color:white">Name: ${agent.displayName}</div>  
+                <div style ="color:white">Description: ${agent.description}</div>   
+                <div> ${abtemplate} </div>
+              </div>`;           
+            
+
+            // let audiobutton = document.getElementById("audiobutton").onclick = playVoice();
+            container.innerHTML = container.innerHTML + template;
+            // document.getElementById("audiobutton").onclick = playVoice();
+          });
+        });
+    </script>
+  </body>
+</html>
